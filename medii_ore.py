@@ -1,4 +1,4 @@
-import statistics
+import numpy as  np
 
 time_list = [line.rstrip('\n') for line in open('time_file.txt')] #extract date/time data
 data_list = [line.rstrip('\n') for line in open('data_file.txt')] #extract values data
@@ -47,19 +47,32 @@ for i in range(len(type_list)):
 #print(len(TC_time))
 l = []
 i = 0
-
+HUM = []
 while i < len(HUM_time):
     #print(HUM_time[i][9:14])  #selecting the hour
     hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08','09', '10', '11',
          '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
 
     for h in hours:
-        while HUM_time[i][9:11] == h:
-            # print(type(HUM_data[i]))
-            l.append(float(HUM_data[i]))
-            i += 1
-        medie = statistics.mean(l)
-        nr_masuratori = len(l)
-        print(HUM_time[i][:9] + " " + h + " " + str(medie) + " " + str(nr_masuratori))
-        l.clear()
+        try:
+            while HUM_time[i][9:11] == h:
+                # print(type(HUM_data[i]))
+                l.append(float(HUM_data[i]))
+                i += 1
+            medie = np.mean(l)
+            nr_masuratori = len(l)
+            element = []
+            element.append(HUM_time[i][:9])
+            element.append(h)
+            element.append(nr_masuratori)
+            element.append(medie)
+            HUM.append(element)
+            #print(element)
+            #print(HUM_time[i][:9] + " " + h + " " + str(medie) + " " + str(nr_masuratori))
+            l.clear()
+        except:
+            print("exeptie")
 
+print(len(HUM))
+for i in range(len(HUM)):
+        print(HUM[i])
