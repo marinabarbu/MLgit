@@ -62,3 +62,4 @@ while i < len(HUM_time):
         nr_masuratori = len(l)
         print(HUM_time[i][:9] + " " + h + " " + str(medie) + " " + str(nr_masuratori))
         l.clear()
+
