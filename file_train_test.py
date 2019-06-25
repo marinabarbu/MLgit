@@ -1,16 +1,44 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
+import random
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error
 
-dataset_url = 'http://www.dsi.uminho.pt/~pcortez/forestfires/forestfires.csv'
-data = pd.read_csv(dataset_url)
-print(data)
-y = data.temp
-X = data.drop('temp',axis=1)
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
-print("\nX_train:\n")
-print(X_train.head())
-print(X_train.shape)
+random.seed(123)
 
-print("\nX_test: \n")
-print(X_test.head())
-print(X_test.shape)
+
+def getData(N):
+    x, y = [], []
+    for i in range(N):
+        a = i / 10 + random.uniform(-1, 1)
+        yy = math.sin(a) + 3 + random.uniform(-1, 1)
+        x.append([a])
+        y.append([yy])
+
+    return np.array(x), np.array(y)
+
+
+x, y = getData(200)
+model = SVR()
+print(model)
+
+model.fit(x, y)
+pred_y = model.predict(x)
+for yo, yp in zip(y[1:15, :], pred_y[1:15]):
+    print(yo, yp)
+
+x_ax = range(200)
+plt.scatter(x_ax, y, s=5, color="blue", label="original")
+plt.plot(x_ax, pred_y, lw=1.5, color="red", label="predicted")
+plt.legend()
+plt.show()
+
+score = model.score(x, y)
+print(score)
+
+mse = mean_squared_error(y, pred_y)
+print("Mean Squared Error:", mse)
+
+rmse = math.sqrt(mse)
+print("Root Mean Squared Error:", rmse)
