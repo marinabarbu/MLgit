@@ -14,7 +14,9 @@ import matplotlib.pyplot as plt
 # Generate sample data
 X = np.sort(5 * np.random.rand(40, 1), axis=0)
 y = np.sin(X).ravel()
-
+print(X)
+print(y)
+print("the size of y is "+ str(len(y)))
 # #############################################################################
 # Add noise to targets
 y[::5] += 3 * (0.5 - np.random.rand(8))
