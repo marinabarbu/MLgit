@@ -73,11 +73,11 @@ while i < len(HUM_time):
             #print(HUM_time[i][:9] + " " + h + " " + str(medie) + " " + str(nr_masuratori))
             l.clear()
         except:
-            print("exeptie")
+            pass
 
 start = 0
 stop = 0
-print(len(HUM))
+#print(len(HUM))
 for i in range(len(HUM)):
     #print(HUM[i])
     if HUM[i][0] == '28-10-18 ':
@@ -95,8 +95,13 @@ for i in range(start+1, stop+1):
     y_data.append(HUM[i][3])
     x_data_days_hours.append(HUM[i][0] + " " + HUM[i][1])
 
+x_data = np.array([x_data]).T
+print(x_data)
+
 '''for i in range(stop - start):
     print(str(x_data_days_hours[i]) + " " + str(x_data[i]) + " " + str(y_data[i]))
+'''
+
 '''
 print(len(x_data))
 svr_poly = SVR(kernel='poly', C=1e3, degree=2)
@@ -114,3 +119,4 @@ plt.ylabel('target')
 plt.title('Support Vector Regression')
 plt.legend()
 plt.show()
+'''

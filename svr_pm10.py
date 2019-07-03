@@ -16,6 +16,9 @@ for i in range(len(type_list)):
         PM10_time.append(time_list[i])
         PM10_data.append(data_list[i])
 
+for i in range(len(PM10_time)):
+    print(PM10_time[i])
+
 l = []
 i = 0
 PM10 = []
@@ -40,13 +43,14 @@ while i < len(PM10_data):
             PM10.append(element)
             l.clear()
         except:
-            print("exeptie")
+            pass
 
 start = 0
 stop = 0
-print(len(PM10))
+#print(len(PM10))
 
 for i in range(1, len(PM10)):
+    #print(PM10[i])
     if PM10[i][0] == PM10[i-1][0] and PM10[i-1][1] is '23':
         PM10.insert(i+23, PM10[i-1])
         PM10.remove(PM10[i-1])
@@ -63,21 +67,47 @@ for i in range(len(PM10)):
 #print(PM10[start + 1])
 
 x_data, y_data, x_data_days_hours = [],[],[]
-for i in range(start+1, stop+1):
+for i in range(start+1, start+25):
     #print(PM10[i])
     x_data.append(i)
     y_data.append(PM10[i][3])
     x_data_days_hours.append(PM10[i][0] + " " + PM10[i][1])
 
-for i in range(stop - start):
-    print(str(x_data_days_hours[i]) + " " + str(x_data[i]) + " " + str(y_data[i]))
+#for i in range(stop - start):
+#    print(str(x_data_days_hours[i]) + " " + str(x_data[i]) + " " + str(y_data[i]))
 
 
-print(len(x_data))
-svr_poly = SVR(kernel='poly', C=1e3, degree=2)
+#print(len(x_data))
+#svr_poly = SVR(kernel='poly', C=1e3, degree=2)
+
+
 svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
-x_data=np.reshape(x_data, len(x_data), 1)
+#x_data=np.reshape(x_data, len(x_data), 1)
+
+for i in range(start+1, start+25):
+    #print(PM10[i])
+    x_data.append(i)
+    y_data.append(PM10[i][3])
+    x_data_days_hours.append(PM10[i][0] + " " + PM10[i][1])
+
+x_data = np.array([x_data]).T
+y_data = np.array(y_data)
+print("x data: " + str(x_data))
+print("y data: " + str(y_data))
 print(x_data.shape)
+print(y_data.shape)
+
+y_rbf = svr_rbf.fit(x_data, y_data).predict(x_data)
+plt.scatter(x_data, y_data, color='black', label='data')
+plt.plot(x_data, y_rbf, color='red', lw=3, label='RBF model')
+plt.xlabel('')
+plt.ylabel('target')
+plt.title('Support Vector Regression')
+plt.legend()
+plt.show()
+
+
+'''
 y_rbf = svr_rbf.fit(x_data, y_data)
 y_poly = svr_poly.fit(x_data, y_data).predict(x_data)
 plt.scatter(x_data, y_data, color='black', label='data')
@@ -89,3 +119,4 @@ plt.ylabel('target')
 plt.title('Support Vector Regression')
 plt.legend()
 plt.show()
+'''
