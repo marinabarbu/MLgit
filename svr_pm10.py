@@ -82,6 +82,7 @@ for i in range(start+1, start+25):
 
 
 svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+
 #x_data=np.reshape(x_data, len(x_data), 1)
 
 for i in range(start+1, start+25):
