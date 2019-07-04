@@ -20,7 +20,6 @@ for i in range(len(type_list)):
 for i in range(len(PM10_time)):
     print(PM10_time[i])
 '''
-
 #print(len(PM10))
 PM10 = []
 
@@ -31,62 +30,71 @@ months= ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
 
 years=['18', '19']
 
-#print("days: " + str(days))
-#print("months: " + str(months))
+print("days: " + str(days))
+print("months: " + str(months))
 
-for y in years:
-    for m in months:
-        for d in days:
-            start = 0
-            stop = 0
-            for i in range(len(PM10_time)):
-                # print(PM10[i])
-                print(d + '-' + m + '-' + y + ' ')
-                print(PM10_time[i][0:8])
-                if PM10_time[i][0:8].strip() == d + '-' + m + '-' + y:
-                    start = i
-                elif PM10_time[i][0:8].strip() == days[days.index(d)+1] + '-' + m + '-' + y:
-                    stop = i
+#print(start, stop)
 
-                # print(start, stop)
-            x_data, y_data, x_data_days_hours = [], [], []
-            for i in range(start + 1, stop + 1):
-                # print(PM10[i])
-                x_data.append(i)
-                y_data.append(PM10_data[i])
-                x_data_days_hours.append(PM10_time[i] + " " + PM10_time[i])
+for i in range(len(PM10_time)):
+    try:
 
-            print(len(x_data))
-            print(len(y_data))
-            x = []
-            for i in range(len(x_data)):
-                x.append(i)
+        x_data, y_data, x_data_days_hours = [], [], []
+        # print(PM10[i])
+        start = 0
+        stop = 0
 
-            print(x)
-            print(y_data)
-            x_data = np.array([x_data]).T
-            x = np.array([x]).T
-            y_data = np.array(y_data)
-            '''
-            print("x: " + str(x))
-            print("x data: " + str(x_data))
-            print("y data: " + str(y_data))
-            print(x.shape)
-            print(x_data.shape)
-            print(y_data.shape)
-            '''
-            svr_rbf = SVR(kernel='rbf', C=1e5, gamma=0.3)
-            y_rbf = svr_rbf.fit(x, y_data).predict(x)
-            lw = 2
-            plt.show()
-            # plt.scatter(x, y_data, color='black', label='data')
-            plt.plot(x, y_rbf, color='red', lw=3, label='RBF model')
-            plt.ylim(bottom=0)
-            plt.ylim(top=200)
-            plt.xlabel('data')
-            plt.ylabel('target')
-            plt.title('Support Vector Regression')
-            plt.legend()
-            plt.show()
+        for y in years:
+            for m in months:
+                for d in days:
+                    try:
+                        if PM10_time[i][0:8].strip() == d + '-' + m + '-' + y:
+                            print(d + '-' + m + '-' + y)
+                            start = i
+                        elif PM10_time[i][0:8].strip() == days[days.index(d) + 1]+ '-' + m + '-' + y:
+                            stop = i
+                    except:
+                        pass
+        for i in range(start+1, stop+1):
+            #print(PM10[i])
+            x_data.append(i)
+            y_data.append(PM10_data[i])
+            x_data_days_hours.append(PM10_time[i] + " " + PM10_time[i])
+
+        print(len(x_data))
+        print(len(y_data))
+        x = []
+        for i in range(len(x_data)):
+            x.append(i)
+
+        print(x)
+        print(y_data)
+        x_data = np.array([x_data]).T
+        x = np.array([x]).T
+        y_data = np.array(y_data)
+
+        '''
+        print("x: " + str(x))
+        print("x data: " + str(x_data))
+        print("y data: " + str(y_data))
+        print(x.shape)
+        print(x_data.shape)
+        print(y_data.shape)
+        
+        '''
+        svr_rbf = SVR(kernel='rbf', C=1e5, gamma=0.3)
+        y_rbf = svr_rbf.fit(x, y_data).predict(x)
+        lw = 2
+        plt.show()
+        #plt.scatter(x, y_data, color='black', label='data')
+        plt.plot(x, y_rbf, color='red', lw=3, label='RBF model')
+        plt.ylim(bottom=0)
+        plt.ylim(top=200)
+        plt.xlabel('data')
+        plt.ylabel('target')
+        plt.title('Support Vector Regression')
+        plt.legend()
+        plt.show()
+    except:
+        pass
 
 
