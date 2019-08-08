@@ -1,6 +1,7 @@
 import numpy as  np
 from sklearn.svm import SVR
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 time_list = [line.rstrip('\n') for line in open('time_file.txt')] #extract date/time data
 data_list = [line.rstrip('\n') for line in open('data_file.txt')] #extract values data
@@ -52,21 +53,37 @@ for d in unic_days:
         y_data.append(PM10_data[i])
         x_data_days_hours.append(PM10_time[i] + " " + PM10_time[i])
 
-    print("start is: " + str(start))
-    print("stop is: " + str(stop))
-    print(len(x_data))
-    print(len(y_data))
+    #print("start is: " + str(start))
+    #print("stop is: " + str(stop))
+    #print(len(x_data))
+    #print(len(y_data))
     x = []
-
     for i in range(len(x_data)):
         x.append(i)
 
-    y_data=np.array(y_data).ravel()
-    print(x)
-    print(y_data)
+    print("lungimea lui x: ", len(x))
+    print("x: ", x)
+
+    print("lungimea lui y: ", len(y_data))
+    print("y: ", y_data)
+
     x_data = np.array([x_data]).T
     x = np.array([x]).T
+    print("x 2: ", x)
+
+    print("y_data: ", y_data)
+    y = y_data
+    y_data = np.array(y_data).ravel()
+    print("y_data_2: ", y_data)
+
     y_data = np.array(y_data)
+    print("y_data_3: ", y_data)
+
+    print("forma lui x ", x.shape)
+    print("forma lui y ", y_data.shape)
+    X_train, X_test, y_train, y_test = train_test_split(x, y_data, test_size=0.2)
+    print("x train shape: ", X_train.shape)
+    print("y train shape: ", y_train.shape)
 
     '''
     print("x: " + str(x))
@@ -80,7 +97,8 @@ for d in unic_days:
     svr_rbf = SVR(kernel='rbf', C=1e2, gamma=0.025)
     y_rbf = svr_rbf.fit(x, y_data).predict(x)
     plt.show()
-    #plt.scatter(x, y_data, color='black', label='data')
+    y = [float(i) for i in y_data]
+    plt.scatter(x, y, color='black', label='data')
     plt.plot(x, y_rbf, color='red', lw=3, label='RBF model')
     plt.ylim(bottom=0)
     plt.ylim(top=200)

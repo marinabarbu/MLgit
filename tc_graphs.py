@@ -1,6 +1,7 @@
 import numpy as  np
 from sklearn.svm import SVR
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 time_list = [line.rstrip('\n') for line in open('time_file.txt')] #extract date/time data
 data_list = [line.rstrip('\n') for line in open('data_file.txt')] #extract values data
@@ -57,7 +58,7 @@ for d in unic_days:
     print(len(x_data))
     print(len(y_data))
     x = []
-
+    y = y_data
     for i in range(len(x_data)):
         x.append(i)
 
@@ -77,16 +78,32 @@ for d in unic_days:
     print(y_data.shape)
     '''
 
+    '''
+    X_train, X_test, y_train, y_test = train_test_split(x_data, y, test_size=0.2)
+    for k in ['linear','poly','rbf','sigmoid']:
+        clf = SVR(kernel=k)
+        clf.fit(X_train, y_train)
+        confidence = clf.score(X_test, y_test)
+        print(k, confidence)
+    '''
+
     svr_rbf = SVR(kernel='rbf', C=1e2, gamma=0.025)
+    #svr_rbf = SVR()
     y_rbf = svr_rbf.fit(x, y_data).predict(x)
     plt.show()
-    #plt.scatter(x, y_data, color='black', label='data')
+    plt.plot(x, y_data, color='black', label='data')
     plt.plot(x, y_rbf, color='red', lw=3, label='RBF model')
-    #plt.ylim(bottom=0)
-    #plt.ylim(top=50)
+    plt.ylim(bottom=20)
+    plt.ylim(top=30)
     plt.xlabel('data')
     plt.ylabel('grad de poluare TC')
     plt.title(days_of_the_week[(unic_days.index(d)+3)%7] + " " + unic_days[unic_days.index(d)+1])
     plt.legend()
     plt.show()
+
+
+
+
+
+
 

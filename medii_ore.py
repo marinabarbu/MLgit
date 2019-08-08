@@ -47,32 +47,31 @@ for i in range(len(type_list)):
 #print(len(TC_time))
 l = []
 i = 0
-HUM = []
-while i < len(HUM_time):
+PM10 = []
+while i < len(PM10_time):
     #print(HUM_time[i][9:14])  #selecting the hour
     hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08','09', '10', '11',
          '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
-
     for h in hours:
         try:
-            while HUM_time[i][9:11] == h:
+            while PM10_time[i][9:11] == h:
                 # print(type(HUM_data[i]))
-                l.append(float(HUM_data[i]))
+                l.append(float(PM10_data[i]))
                 i += 1
             medie = np.mean(l)
             nr_masuratori = len(l)
             element = []
-            element.append(HUM_time[i][:9])
+            element.append(PM10_time[i][:9])
             element.append(h)
             element.append(nr_masuratori)
             element.append(medie)
-            HUM.append(element)
+            PM10.append(element)
             #print(element)
             #print(HUM_time[i][:9] + " " + h + " " + str(medie) + " " + str(nr_masuratori))
             l.clear()
         except:
             print("exeptie")
 
-print(len(HUM))
-for i in range(len(HUM)):
-        print(HUM[i])
+print(len(PM10_data))
+for i in range(len(PM10)):
+        print(PM10[i])

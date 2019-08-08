@@ -77,7 +77,7 @@ for d in unic_days:
     print(x_data.shape)
     print(y_data.shape)
     '''
-    svr_rbf = SVR(kernel='rbf', C=1e1, gamma=0.025)
+    svr_rbf = SVR(kernel='rbf', C=1, gamma=0.025)
     y_rbf = svr_rbf.fit(x, y_data).predict(x)
     plt.show()
     #plt.scatter(x, y, color='black', label='data')
