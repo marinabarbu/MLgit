@@ -2,6 +2,8 @@ import numpy as np
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
+import math
 
 dates, values = [], []
 
@@ -58,7 +60,7 @@ y = np.array(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 y_test = [float(e) for e in y_test]
-svr_rbf = SVR(kernel= 'rbf', C= 1e3, gamma= 0.1).fit(X_train, y_train)
+svr_rbf = SVR(kernel= 'rbf', C= 1e2, gamma= 0.1).fit(X_train, y_train)
 y_pred = svr_rbf.predict(X_test)
 
 y_pred = [ '%.2f' % elem for elem in y_pred]
@@ -69,7 +71,13 @@ for i in range(len(y_test)):
 print()
 
 corr_coef = np.corrcoef(y_test, y_pred)[0,1]
-print(corr_coef)
+print("accuracy: ",corr_coef)
+
+mse = mean_squared_error(y_test, y_pred)
+print("Mean Squared Error:",mse)
+
+rmse = math.sqrt(mse)
+print("Root Mean Squared Error:", rmse)
 
 svr_for_graph = SVR(kernel= 'rbf', C= 1e3, gamma= 0.1).fit(X, y)
 y_pred_for_graph = svr_for_graph.predict(X)
