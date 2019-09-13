@@ -57,29 +57,57 @@ X = np.array([X]).T
 y = np.array(y).ravel()
 y = np.array(y)
 
+print("x length: ", len(X))
+print("y length: ", len(y))
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+print("x train length: ", len(X_train))
+print("y train length: ", len(y_train))
+
+print("x test length: ", len(X_test))
+print("y  test length: ", len(y_test))
+
 y_test = [float(e) for e in y_test]
-svr_rbf = SVR(kernel= 'rbf', C= 1e2, gamma= 0.1).fit(X_train, y_train)
+
+'''
+gamma_list = ['auto', 0.5, 0.3, 0.1, 0.05, 0.04, 0.03,0.02,0.01, 0.005, 0.004, 0.003,0.002,0.001]
+c_list = [1e3, 1e5]
+
+for c in c_list:
+    for g in gamma_list:
+        svr_rbf = SVR(kernel='rbf', C=c, gamma=g).fit(X_train, y_train)
+        y_pred = svr_rbf.predict(X_test)
+        y_pred = ['%.2f' % elem for elem in y_pred]
+        y_pred = [float(e) for e in y_pred]
+        corr_coef = np.corrcoef(y_test, y_pred)[0, 1]
+        mse = mean_squared_error(y_test, y_pred)
+        print("for C = ", c, " and gamma = ", g, " corelation coeficient is ", corr_coef,
+              " and mean squared error = ", mse)
+'''
+
+
+svr_rbf = SVR(kernel= 'rbf', C = 1e2, gamma = 0.1).fit(X_train, y_train)
 y_pred = svr_rbf.predict(X_test)
 
 y_pred = [ '%.2f' % elem for elem in y_pred]
 y_pred = [float(e) for e in y_pred]
 
-for i in range(len(y_test)):
-    print(y_test[i], y_pred[i])
+for i in range(len(y_train)):
+    print(X_train[i], y_train[i])
 print()
 
 corr_coef = np.corrcoef(y_test, y_pred)[0,1]
-print("accuracy: ",corr_coef)
+print("corelatia: ",corr_coef)
 
 mse = mean_squared_error(y_test, y_pred)
-print("Mean Squared Error:",mse)
+print("Mean Squared Error:", mse)
 
 rmse = math.sqrt(mse)
 print("Root Mean Squared Error:", rmse)
 
-svr_for_graph = SVR(kernel= 'rbf', C= 1e3, gamma= 0.1).fit(X, y)
+'''
+svr_for_graph = SVR(kernel= 'rbf', C= 1e2, gamma= 'auto_deprecated').fit(X, y)
 y_pred_for_graph = svr_for_graph.predict(X)
 
 plt.show()
@@ -92,3 +120,4 @@ plt.xlabel('data')
 plt.ylabel('grad de poluare PM10')
 plt.legend()
 plt.show()
+'''
