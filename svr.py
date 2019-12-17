@@ -60,7 +60,7 @@ y = np.array(y)
 print("x length: ", len(X))
 print("y length: ", len(y))
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 print("x train length: ", len(X_train))
 print("y train length: ", len(y_train))
@@ -69,10 +69,11 @@ print("x test length: ", len(X_test))
 print("y  test length: ", len(y_test))
 
 y_test = [float(e) for e in y_test]
-
 '''
+
 gamma_list = ['auto', 0.5, 0.3, 0.1, 0.05, 0.04, 0.03,0.02,0.01, 0.005, 0.004, 0.003,0.002,0.001]
-c_list = [1e3, 1e5]
+c_list = [1, 10, 1e2, 1e3, 1e4, 1e5]
+
 
 for c in c_list:
     for g in gamma_list:
@@ -82,20 +83,24 @@ for c in c_list:
         y_pred = [float(e) for e in y_pred]
         corr_coef = np.corrcoef(y_test, y_pred)[0, 1]
         mse = mean_squared_error(y_test, y_pred)
-        print("for C = ", c, " and gamma = ", g, " corelation coeficient is ", corr_coef,
+        print("for C = ", c, " and gamma = ", g, " correlation coefficient is ", corr_coef,
               " and mean squared error = ", mse)
+
 '''
-
-
 svr_rbf = SVR(kernel= 'rbf', C = 1e2, gamma = 0.1).fit(X_train, y_train)
 y_pred = svr_rbf.predict(X_test)
 
 y_pred = [ '%.2f' % elem for elem in y_pred]
 y_pred = [float(e) for e in y_pred]
 
-for i in range(len(y_train)):
-    print(X_train[i], y_train[i])
+y_test = [ '%.2f' % elem for elem in y_test]
+y_test = [float(e) for e in y_test]
+
+'''
+for i in range(len(y_test)):
+    print("Predicted data: ", y_pred[i], "Tested data: ", y_test[i])
 print()
+'''
 
 corr_coef = np.corrcoef(y_test, y_pred)[0,1]
 print("corelatia: ",corr_coef)
@@ -106,18 +111,32 @@ print("Mean Squared Error:", mse)
 rmse = math.sqrt(mse)
 print("Root Mean Squared Error:", rmse)
 
-'''
-svr_for_graph = SVR(kernel= 'rbf', C= 1e2, gamma= 'auto_deprecated').fit(X, y)
+svr_for_graph = SVR(kernel= 'rbf', C= 1e2, gamma= 'auto_deprecated').fit(X_train, y_train)
 y_pred_for_graph = svr_for_graph.predict(X)
+
+y_test_max = max(y_test)
+y_pred_max = max(y_pred)
+
+max_val = max(y_test_max, y_pred_max)
+
+x_graph = [x for x in range(round(max_val))]
+y_graph = x_graph
+
+plt.scatter(y_pred, y_test)
+plt.plot(x_graph, y_graph, color='black')
+plt.show()
+
+'''
 
 plt.show()
 y = [float(i) for i in y]
-plt.scatter(X,y, color='black', label='real data')
-plt.plot(X, y_pred_for_graph, color='red', lw=3, label="RBF model")
+#plt.plot(X,y, color="black", label="real data")
+plt.scatter(X, y, color='black', label='real data')
+plt.plot(X, y_pred_for_graph, color='red', lw=2, label="RBF model")
 plt.ylim(bottom=0)
 plt.ylim(top=150)
-plt.xlabel('data')
-plt.ylabel('grad de poluare PM10')
+plt.xlabel('data index')
+plt.ylabel('pollution degree PM10')
 plt.legend()
 plt.show()
 '''
