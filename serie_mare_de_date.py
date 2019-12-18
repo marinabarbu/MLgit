@@ -1,8 +1,5 @@
 from pandas import read_csv
 from pandas import datetime
-from matplotlib import pyplot
-from statsmodels.tsa.arima_model import ARIMA
-from sklearn.metrics import mean_squared_error
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
@@ -16,6 +13,8 @@ def parser(x):
 #SCP_rfc3339_medii_orare.csv
 dates, values = [], []
 data = read_csv('SCP_rfc3339_medii_orare.csv')
+
+'''
 for row in data.iterrows():
     if row[1][0]=='mqtt.meshliumfa30.SCP3.PM10.value':
         #print(row[1][1], row[1][2])
@@ -26,8 +25,22 @@ for row in data.iterrows():
 #print(values)
 X = dates
 X = [x for x in range(len(X))]
+'''
+X, y = [], []
+
+start = int(137782)
+stop = int(144553)
+
+for row in data.iterrows():
+    if int(row[0]) >= start and int(row[0]) < stop:
+        if(row[1][2] != 'mean'):
+            X.append(int(row[0]) - start)
+            #print(row[1][2])
+            y.append(float(row[1][2]))
+
 print(X)
-y = values
+print(y)
+#y = values
 
 X = np.array([X]).T
 y = np.array(y).ravel()
