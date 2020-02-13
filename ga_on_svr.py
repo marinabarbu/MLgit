@@ -1,12 +1,8 @@
 from pandas import read_csv
-from pandas import datetime
 import numpy as np
 from operator import itemgetter
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVR
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error
-import math
 from svr_functions import apply_svr
 
 #SCP_rfc3339_medii_orare.csv
@@ -49,7 +45,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 y_test = [float(e) for e in y_test]
 y_train = [float(e) for e in y_train]
 
-for i in range(10):
+for i in range(20):
     population.append([np.random.choice([1, 0], p=[0.8, 0.2]) for i in range(len(X_train))])
 
 num_generations = 100
