@@ -57,18 +57,20 @@ X = np.array([X]).T
 y = np.array(y).ravel()
 y = np.array(y)
 
-print("x length: ", len(X))
-print("y length: ", len(y))
+print("x length: ", len(X), "Shape: ", X.shape)
+print("y length: ", len(y), "shape: ", y.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-print("x train length: ", len(X_train))
-print("y train length: ", len(y_train))
+print("x train length: ", len(X_train), "shape: ", X_train.shape)
+print("y train length: ", len(y_train), "shape: ", y_train.shape)
 
-print("x test length: ", len(X_test))
-print("y  test length: ", len(y_test))
+print("x test length: ", len(X_test),"shape: ", X_test.shape)
+
+#print("y  test length: ", len(y_test), "shape: ", y_test.shape)
 
 y_test = [float(e) for e in y_test]
+#print("y  test length: ", len(y_test), "shape: ", y_test.shape)
 '''
 
 gamma_list = ['auto', 0.5, 0.3, 0.1, 0.05, 0.04, 0.03,0.02,0.01, 0.005, 0.004, 0.003,0.002,0.001]

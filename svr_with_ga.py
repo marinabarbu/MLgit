@@ -84,19 +84,19 @@ y = np.array(y)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 0)
 
 y_test = [float(e) for e in y_test]
-y_train = [float(e) for e in y_train]
+#y_train = [float(e) for e in y_train]
 
-X_test = [float(e) for e in X_test]
-X_train = [float(e) for e in X_train]
+#X_test = [float(e) for e in X_test]
+#X_train = [float(e) for e in X_train]
 
 population = []
 
 for i in range(20):
-    population.append([np.random.choice([1, 0], p=[0.85, 0.15]) for i in range(len(X_train))])
+    population.append([np.random.choice([1, 0], p=[0.95, 0.05]) for i in range(len(X_train))])
 
 #print(X_train.shape)
 
-num_generations = 100
+num_generations = 300
 chr_hist, acc_hist = [], []
 max_acc = 0
 best_chr = []
@@ -107,6 +107,10 @@ print(X_test.shape, len(X_test))
 print(X_train.shape, len(X_train))
 print(X_test.shape, len(X_test))
 '''
+
+corr_coef = apply_svr(X_train, y_train, X_test, y_test)
+print("Accuracy without GA: ", corr_coef*100)
+
 for generation in range(num_generations):
     print("Generation : ", generation)
     chr_and_acc_list = []
@@ -117,6 +121,8 @@ for generation in range(num_generations):
                 new_X_train.append(X_train[i])
                 new_y_train.append(y_train[i])
         #print(len(new_y_train), len(new_X_train))
+
+
         corr_coef = apply_svr(new_X_train, new_y_train, X_test, y_test)
         chr_and_acc_list.append([chr, corr_coef*100])
 
