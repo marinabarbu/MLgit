@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 import matplotlib.pyplot as plt
-
+import csv
 
 
 
@@ -111,41 +111,50 @@ print(X_test.shape, len(X_test))
 corr_coef = apply_svr(X_train, y_train, X_test, y_test)
 print("Accuracy without GA: ", corr_coef*100)
 
-for generation in range(num_generations):
-    print("Generation : ", generation)
-    chr_and_acc_list = []
-    for chr in population:
-        new_X_train, new_y_train = [], []
-        for i in range(len(chr)):
-            if chr[i] == 1:
-                new_X_train.append(X_train[i])
-                new_y_train.append(y_train[i])
-        #print(len(new_y_train), len(new_X_train))
 
 
-        corr_coef = apply_svr(new_X_train, new_y_train, X_test, y_test)
-        chr_and_acc_list.append([chr, corr_coef*100])
+with open("accuracy.csv", "w", newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Generation', 'Accuracy'])
+    writer.writerow(['0', (str(corr_coef*100))])
 
-        #print(corr_coef)
-    chr_and_acc_list = sorted(chr_and_acc_list, key=itemgetter(1))
-    if chr_and_acc_list[-1][1] > max_acc:
-        best_chr = [x for x in chr_and_acc_list[-1][0]]
-        max_acc = chr_and_acc_list[-1][1]
+    for generation in range(1, num_generations+1):
+        print("Generation : ", generation)
+        chr_and_acc_list = []
+        for chr in population:
+            new_X_train, new_y_train = [], []
+            for i in range(len(chr)):
+                if chr[i] == 1:
+                    new_X_train.append(X_train[i])
+                    new_y_train.append(y_train[i])
+            #print(len(new_y_train), len(new_X_train))
 
-    chrOfOnes = [x for x in best_chr if x == 1]
-    # print(sum(best_chr))
-    chr_hist.append(len(chrOfOnes))
-    acc_hist.append(max_acc)
-    print("Accuracy: ", max_acc)
-    parent_1 = [x for x in chr_and_acc_list[-1][0]]
-    parent_2 = [x for x in chr_and_acc_list[-2][0]]
-    # Încrucișarea:
-    index = population.index(parent_1)
-    offspring = crossover(parent_1, parent_2)
-    del population[index]
-    population.insert(index, offspring)
-    # Mutația:
-    population = [mutation(chr, p=0.05) for chr in population]
+
+            corr_coef = apply_svr(new_X_train, new_y_train, X_test, y_test)
+            chr_and_acc_list.append([chr, corr_coef*100])
+
+            #print(corr_coef)
+        chr_and_acc_list = sorted(chr_and_acc_list, key=itemgetter(1))
+        if chr_and_acc_list[-1][1] > max_acc:
+            best_chr = [x for x in chr_and_acc_list[-1][0]]
+            max_acc = chr_and_acc_list[-1][1]
+
+        chrOfOnes = [x for x in best_chr if x == 1]
+        # print(sum(best_chr))
+        chr_hist.append(len(chrOfOnes))
+        acc_hist.append(max_acc)
+        print("Accuracy: ", max_acc)
+        #row = list('Accuracy for generation ' + str(generation) +  " : " + str(max_acc))
+        writer.writerow([str(generation), str(max_acc)])
+        parent_1 = [x for x in chr_and_acc_list[-1][0]]
+        parent_2 = [x for x in chr_and_acc_list[-2][0]]
+        # Încrucișarea:
+        index = population.index(parent_1)
+        offspring = crossover(parent_1, parent_2)
+        del population[index]
+        population.insert(index, offspring)
+        # Mutația:
+        population = [mutation(chr, p=0.05) for chr in population]
 
 
 plt.figure()
@@ -173,10 +182,10 @@ for i in range(len(X_train)):
 plt.figure()
 
 plt.subplot(2, 1, 1)
-plt.plot(X_train, y_train, 'o', color='red', label="Set de antrenare initial")
+plt.plot(X_train, y_train, 'o', color='red', label="Initial training set")
 
 plt.show()
 
 plt.subplot(2, 1, 2)
-plt.plot(new_X_train, new_y_train, 'o', color='red', label="Set de antrenare dupa selectie")
+plt.plot(new_X_train, new_y_train, 'o', color='red', label="Training set after selection")
 plt.show()
