@@ -52,6 +52,17 @@ for i in range(len(PM10)):
 
 y_data = y
 y = [ '%.2f' % elem for elem in y_data ]
+y_compare = [float(e) for e in y]
+
+wrong_values = []
+no_wv = 0
+
+for x in X:
+    if y_compare[x] > 500:
+        wrong_values.append([x,y_compare[x]])
+        no_wv += 1
+
+print(no_wv)
 
 X = np.array([X]).T
 y = np.array(y).ravel()
@@ -59,6 +70,8 @@ y = np.array(y)
 
 print("x length: ", len(X), "Shape: ", X.shape)
 print("y length: ", len(y), "shape: ", y.shape)
+
+
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
@@ -71,24 +84,7 @@ print("x test length: ", len(X_test),"shape: ", X_test.shape)
 
 y_test = [float(e) for e in y_test]
 #print("y  test length: ", len(y_test), "shape: ", y_test.shape)
-'''
 
-gamma_list = ['auto', 0.5, 0.3, 0.1, 0.05, 0.04, 0.03,0.02,0.01, 0.005, 0.004, 0.003,0.002,0.001]
-c_list = [1, 10, 1e2, 1e3, 1e4, 1e5]
-
-
-for c in c_list:
-    for g in gamma_list:
-        svr_rbf = SVR(kernel='rbf', C=c, gamma=g).fit(X_train, y_train)
-        y_pred = svr_rbf.predict(X_test)
-        y_pred = ['%.2f' % elem for elem in y_pred]
-        y_pred = [float(e) for e in y_pred]
-        corr_coef = np.corrcoef(y_test, y_pred)[0, 1]
-        mse = mean_squared_error(y_test, y_pred)
-        print("for C = ", c, " and gamma = ", g, " correlation coefficient is ", corr_coef,
-              " and mean squared error = ", mse)
-
-'''
 svr_rbf = SVR(kernel= 'rbf', C = 1e2, gamma = 0.1).fit(X_train, y_train)
 y_pred = svr_rbf.predict(X_test)
 
