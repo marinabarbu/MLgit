@@ -46,6 +46,10 @@ X = np.array([X]).T
 y = np.array(y).ravel()
 y = np.array(y)
 
+print("Min value: ", min(y), ", Max value: ", max(y))
+valori_mari = [x for x in y if x>500]
+print("Values greater then 500: ", len(valori_mari))
+
 print("x length: ", len(X))
 print("y length: ", len(y))
 
@@ -95,6 +99,9 @@ y_graph = x_graph
 plt.scatter(y_pred, y_test)
 plt.plot(x_graph, y_graph, color='black')
 plt.show()
+
+for i in range(100):
+    print("x: ", X_test[i], " pred: ", y_pred[i], " real: ", y_test[i])
 
 '''
 plt.scatter(X_test, y_test, color='black', label='real data')

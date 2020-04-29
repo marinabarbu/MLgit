@@ -14,7 +14,7 @@ type_list = [line.rstrip('\n') for line in open('type_file.txt')] #extract type 
 PM10_time, PM10_data = [], []
 
 for i in range(len(type_list)):
-    if type_list[i] == "PM10":
+    if type_list[i] == "PM1":
         PM10_time.append(time_list[i])
         PM10_data.append(data_list[i])
 
@@ -62,7 +62,10 @@ for x in X:
         wrong_values.append([x,y_compare[x]])
         no_wv += 1
 
-print(no_wv)
+val_min = min(y_compare)
+val_max = max(y_compare)
+
+print("valori mai mari de 500: ", no_wv, ", min: ", val_min, ", max: ", val_max)
 
 X = np.array([X]).T
 y = np.array(y).ravel()
