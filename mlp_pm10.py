@@ -6,6 +6,8 @@ from sklearn.metrics import mean_squared_error
 import math
 from sklearn.neural_network import MLPClassifier
 import torch
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
 
 dates, values = [], []
 
@@ -26,10 +28,12 @@ PM10 = []
 
 while i < len(PM10_time):
     #print(HUM_time[i][9:14])  #selecting the hour
-    hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    hours = [0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23.]
+    # hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+    # hours = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
     for h in hours:
         try:
-            while PM10_time[i][9:11] == h:
+            while float(PM10_time[i][9:11]) == h:
                 # print(type(HUM_data[i]))
                 l.append(float(PM10_data[i]))
                 i += 1
@@ -39,14 +43,15 @@ while i < len(PM10_time):
             element.append(PM10_time[i][:9])
             element.append(h)
             element.append(nr_masuratori)
-            element.append(medie)
+            # answer = str(round(answer, 2))
+            element.append(round(medie,2))
             PM10.append(element)
             l.clear()
         except:
             pass
 
-for data in PM10:
-    print(data)
+# for data in PM10:
+#     print(data)
 
 X, y = [], []
 
@@ -54,10 +59,24 @@ for i in range(1,len(PM10)):
     X.append([PM10[i-1][1], PM10[i-1][3], PM10[i][1]])
     y.append(PM10[i][3])
 
+print(len(X))
+print(len(y))
+
 print(X)
 print(y)
 
-clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-clf.fit(X, y)
+X = np.array([X]).T
+y = np.array(y).ravel()
+y = np.array(y)
 
-torch.save(clf.state_dict(), "model_clf.pt")
+#X, y = make_classification(n_samples=100, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+clf = MLPClassifier(random_state=1, max_iter=300)
+#clf = MLPClassifier(alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+
+
+clf.fit(X_train, y_train)
+print(X_test[0], y_test[0])
+
+
+# torch.save(clf.state_dict(), "model_clf.pt")
