@@ -44,7 +44,7 @@ while i < len(PM10_time):
             element.append(h)
             element.append(nr_masuratori)
             # answer = str(round(answer, 2))
-            element.append(round(medie,2))
+            element.append(round(medie))
             PM10.append(element)
             l.clear()
         except:
@@ -56,8 +56,11 @@ while i < len(PM10_time):
 X, y = [], []
 
 for i in range(1,len(PM10)):
-    X.append([PM10[i-1][1], PM10[i-1][3], PM10[i][1]])
-    y.append(PM10[i][3])
+    if math.isnan(PM10[i][3]) or math.isnan(PM10[i][1]) or math.isnan(PM10[i - 1][1]) or math.isnan(PM10[i - 1][3]):
+        print("is nan", PM10[i][3], i)
+    else:
+        X.append([PM10[i - 1][1], PM10[i - 1][3], PM10[i][1]])
+        y.append(PM10[i][3])
 
 print(len(X))
 print(len(y))
@@ -65,18 +68,38 @@ print(len(y))
 print(X)
 print(y)
 
-X = np.array([X]).T
-y = np.array(y).ravel()
-y = np.array(y)
+# X = np.array([X]).T
+# y = np.array(y).ravel()
+# y = np.array(y)
 
 #X, y = make_classification(n_samples=100, random_state=1)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-clf = MLPClassifier(random_state=1, max_iter=300)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+# clf = MLPClassifier(random_state=1, max_iter=300)
 #clf = MLPClassifier(alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
 
-
+# clf = MLPClassifier(solver='lbfgs', alpha=1000, hidden_layer_sizes=(15,), random_state=1)
+clf = MLPClassifier()
+# clf.fit(X[:2000],y[:2000])
 clf.fit(X_train, y_train)
-print(X_test[0], y_test[0])
-
-
+# print(X_test[0], y_test[0])
+# print(clf.predict([X[2001]]), y[2001])
+#
 # torch.save(clf.state_dict(), "model_clf.pt")
+y_pred = []
+
+for i in range(len(X_test)):
+    pred = clf.predict([X_test[i]])
+    print(pred[0], y_test[i])
+    y_pred.append(pred[0])
+
+corr_coef = np.corrcoef(y_test, y_pred)[0,1]
+print(corr_coef)
+
+max_val = max(max(y_test), max(y_pred))
+
+x_graph = [x for x in range(int(round(max_val)))]
+y_graph = x_graph
+
+plt.scatter(y_pred, y_test)
+plt.plot(x_graph, y_graph, color='black')
+plt.show()
