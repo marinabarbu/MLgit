@@ -6,6 +6,7 @@ from sklearn.svm import SVR
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 import math
+import  pickle
 
 def parser(x):
     return datetime.strptime(x, "%Y-%m-%d %H")
@@ -42,6 +43,12 @@ print(X)
 print(y)
 #y = values
 
+with open("X_values_serie_mare", 'wb') as f:
+    pickle.dump(X, f)
+
+with open("y_values_serie_mare", 'wb') as f:
+    pickle.dump(y, f)
+
 X = np.array([X]).T
 y = np.array(y).ravel()
 y = np.array(y)
@@ -52,6 +59,9 @@ print("Values greater then 500: ", len(valori_mari))
 
 print("x length: ", len(X))
 print("y length: ", len(y))
+
+print("x type: ", type(X))
+print("y type: ", type(y))
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = 0)
 

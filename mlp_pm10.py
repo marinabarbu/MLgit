@@ -1,6 +1,4 @@
 import numpy as np
-from sklearn.svm import SVR
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 import math
@@ -8,6 +6,8 @@ from sklearn.neural_network import MLPClassifier
 import torch
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
+import pickle
+import torch
 
 dates, values = [], []
 
@@ -68,9 +68,29 @@ print(len(y))
 print(X)
 print(y)
 
+# with open("X_values_serie_mare", 'wb') as f:
+#     pickle.dump(X, f)
+#
+# with open("y_values_serie_mare", 'wb') as f:
+#     pickle.dump(y, f)
+
+
 # X = np.array([X]).T
 # y = np.array(y).ravel()
 # y = np.array(y)
+X, y = [], []
+
+with open("X_values", 'rb') as f:
+    X = pickle.load(f)
+
+with open("y_values", 'rb') as f:
+    y = pickle.load(f)
+
+print(X)
+print(y)
+
+print(len(X))
+print(len(y))
 
 #X, y = make_classification(n_samples=100, random_state=1)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
@@ -86,6 +106,8 @@ clf.fit(X_train, y_train)
 #
 # torch.save(clf.state_dict(), "model_clf.pt")
 y_pred = []
+
+torch.save(clf, "model")
 
 for i in range(len(X_test)):
     pred = clf.predict([X_test[i]])
