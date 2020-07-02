@@ -11,7 +11,19 @@ hours = [0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 15., 1
 lista_ore = []
 import torch
 
+
+
 clf = torch.load("model_large_dataset")
+
+# l = []
+# l.append(float(round(float(10))))
+# l.append(float(round((59.8))))
+#
+# l.append(float(round(float(11))))
+# l[1] = np.float64(l[1])
+# print(l)
+# pred = clf.predict(l)
+# print(pred)
 
 def on_connect(client, userdata, flags, rc):
     # print("Connect with Code: ", str(rc))
