@@ -1,18 +1,35 @@
 import paho.mqtt.client as mqtt
 import re
 import numpy as np
+import paho.mqtt.publish as publish
+import torch
+import json
 
 #topic = 'meshliumfa30/WINSHI/#'
 topic = 'meshliumfa30/SCP3/PM10/#'
 # topic = 'meshliumfa30/Metrorex/PM10'
+topic_for_publish = 'meshliumfa30/SCP3/PP10'
+topic_for_publish_mean_value = 'meshliumfa30/SCP3/PMA10'
+MQTT_server = "mqtt.beia-telemetrie.ro"
+MQTT_port = 1883
 
-hours = [0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20., 21., 22., 23.]
 lista_ore = []
-import torch
+
+# value = 60.0
+# payload = json.dumps({'predicted': value})
+# publish.single(topic_for_publish, payload=payload, hostname=MQTT_server, port=MQTT_port)
 
 
 
-clf = torch.load("model_large_dataset3")
+# functie public pentru trimiterea datelor prezise pe grafana
+# media reala -> diferenta intre prezis si real
+# descrierea metodei -> ro
+
+
+
+
+
+clf = torch.load("model_large_dataset")
 
 def on_connect(client, userdata, flags, rc):
     # print("Connect with Code: ", str(rc))
@@ -20,6 +37,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(topic)
 
 def on_message(client, userdata, msg):
+    predicted = 0
     m = str(msg.payload)
     print(m)
     text = re.findall('"([^"]*)"', m) #selectarea string-urilor dintre ghilimele
@@ -39,13 +57,21 @@ def on_message(client, userdata, msg):
             print("Aici!")
             l = []
             medie = np.mean([x[1] for x in lista_ore])
+            print("Real mean value for ", lista_ore[-1][0], " hour is ", medie)
             print([lista_ore[-1][0], medie, hour])
             print([lista_ore[-1][0], float(round(medie)), hour])
             l.append(lista_ore[-1][0])
             l.append(float(round(medie)))
             l.append(hour)
-            predict = clf.predict([l])
-            print("Predicted mean value for ", hour, " hour: ", predict[0])
+            predicted = clf.predict([l])
+            # print("pred: ", predicted[0])
+
+            payload = json.dumps({'mean': medie})
+            publish.single(topic_for_publish_mean_value, payload=payload, hostname=MQTT_server, port=MQTT_port)
+            predicted = clf.predict([l])
+            payload = json.dumps({'predicted': predicted[0]})
+            publish.single(topic_for_publish, payload=payload, hostname=MQTT_server, port=MQTT_port)
+            print("Predicted mean value for ", hour, " hour: ", predicted[0])
             lista_ore.clear()
             lista_ore.append([hour, round(value)])
             print(lista_ore)
@@ -57,8 +83,8 @@ def on_message(client, userdata, msg):
         l.append((hour + 1)%24)
         l[1] = np.float64(l[1])
         print(l)
-        pred = clf.predict([l])
-        print("Predicted: ", pred[0])
+        predicted = clf.predict([l])
+        print("Predicted: ", predicted[0])
 
 
 client = mqtt.Client()
