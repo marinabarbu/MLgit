@@ -36,6 +36,8 @@ def on_connect(client, userdata, flags, rc):
     #Subscribe Topic:
     client.subscribe(topic)
 
+preds = []
+
 def on_message(client, userdata, msg):
     predicted = 0
     m = str(msg.payload)
@@ -63,15 +65,20 @@ def on_message(client, userdata, msg):
             l.append(lista_ore[-1][0])
             l.append(float(round(medie)))
             l.append(hour)
-            predicted = clf.predict([l])
-            # print("pred: ", predicted[0])
-
             payload = json.dumps({'mean': medie})
             publish.single(topic_for_publish_mean_value, payload=payload, hostname=MQTT_server, port=MQTT_port)
+
+            if len(preds) > 0:
+                print(preds)
+                print(preds[-1])
+                p = preds[-1]
+                payload = json.dumps({'predicted': p})
+                publish.single(topic_for_publish, payload=payload, hostname=MQTT_server, port=MQTT_port)
+
             predicted = clf.predict([l])
-            payload = json.dumps({'predicted': predicted[0]})
-            publish.single(topic_for_publish, payload=payload, hostname=MQTT_server, port=MQTT_port)
             print("Predicted mean value for ", hour, " hour: ", predicted[0])
+            print("predicted list: ", preds)
+            preds.append(predicted[0])
             lista_ore.clear()
             lista_ore.append([hour, round(value)])
             print(lista_ore)
