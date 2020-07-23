@@ -10,6 +10,7 @@ topic = 'meshliumfa30/SCP3/PM10/#'
 # topic = 'meshliumfa30/Metrorex/PM10'
 topic_for_publish = 'meshliumfa30/SCP3/PP10'
 topic_for_publish_mean_value = 'meshliumfa30/SCP3/PMA10'
+topic_for_publish_pred = 'meshliumfa30/SCP3/PM10P'
 MQTT_server = "mqtt.beia-telemetrie.ro"
 MQTT_port = 1883
 
@@ -77,6 +78,8 @@ def on_message(client, userdata, msg):
 
             predicted = clf.predict([l])
             print("Predicted mean value for ", hour, " hour: ", predicted[0])
+            payload = json.dumps({'predicted': predicted[0]})
+            publish.single(topic_for_publish_pred, payload=payload, hostname=MQTT_server, port=MQTT_port)
             print("predicted list: ", preds)
             preds.append(predicted[0])
             lista_ore.clear()
@@ -100,3 +103,5 @@ client.on_message = on_message
 
 client.connect("mqtt.beia-telemetrie.ro", 1883, 60)
 client.loop_forever()
+
+#%Y-%m-%dT%H:%M
