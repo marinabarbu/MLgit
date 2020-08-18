@@ -61,9 +61,7 @@ def on_message(client, userdata, msg):
             print("Aici!")
             l = []
             medie = np.mean([x[1] for x in lista_ore])
-            with open('new_data.csv', mode='w') as new_data:
-                writer = csv.writer(new_data, delimiter=',', newline='')
-                writer.writerow([lista_ore[-1][0], medie])
+
             print("Real mean value for ", lista_ore[-1][0], " hour is ", medie)
             print([lista_ore[-1][0], medie, hour])
             print([lista_ore[-1][0], float(round(medie)), hour])
@@ -89,6 +87,11 @@ def on_message(client, userdata, msg):
             lista_ore.clear()
             lista_ore.append([hour, round(value)])
             print(lista_ore)
+
+            with open('new_data.csv', 'a') as new_data:
+                writer = csv.writer(new_data, delimiter=',', newline='')
+                writer.writerow([lista_ore[-1][0], medie])
+
     else:
         lista_ore.append([hour, round(value)])
         l = []
